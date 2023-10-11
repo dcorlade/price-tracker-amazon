@@ -1,5 +1,6 @@
 'use client';
 
+import { scrapeAndStoreProduct } from '@/lib/actions';
 import React, { FormEvent, useState } from 'react';
 
 const SearchBar = () => {
@@ -13,7 +14,7 @@ const SearchBar = () => {
 
       //Check if hostname contains amazon.country code
       if (
-        hostname.includes('amazon.es') ||
+        hostname.includes('amazon.com') ||
         hostname.includes('amazon.') ||
         hostname.endsWith('amazon')
       ) {
@@ -25,7 +26,7 @@ const SearchBar = () => {
     return false;
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const isValidLink = isValidAmazonProductURL(searchPrompt);
@@ -36,6 +37,7 @@ const SearchBar = () => {
       setIsLoading(true);
 
       // scrape the product page
+      const product = await scrapeAndStoreProduct(searchPrompt);
     } catch (error) {
       console.log(error);
     } finally {
